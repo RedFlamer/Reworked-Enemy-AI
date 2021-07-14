@@ -202,7 +202,7 @@ function CopLogicAttack._upd_aim( data, my_data )
 					end
 				end
 			end
-			if aim == nil and focus_enemy.reaction >= AIAttentionObject.REACT_AIM then
+			if not aim then
 				if focus_enemy.reaction >= AIAttentionObject.REACT_SHOOT then
 					local running = my_data.advancing and not my_data.advancing:stopping() and my_data.advancing:haste() == "run"
 					
@@ -242,7 +242,7 @@ function CopLogicAttack._upd_aim( data, my_data )
 					aim = true
 				end
 			end
-		elseif focus_enemy.reaction >= AIAttentionObject.REACT_AIM then
+		else
 			local time_since_verification = focus_enemy.verified_t and data.t - focus_enemy.verified_t
 			local running = my_data.advancing and not my_data.advancing:stopping() and my_data.advancing:haste() == "run"
 			local same_z = math.abs( focus_enemy.verified_pos.z - data.m_pos.z ) < 250
@@ -284,11 +284,6 @@ function CopLogicAttack._upd_aim( data, my_data )
 						aim = true
 					end
 				end
-			end
-		else
-			expected_pos = CopLogicAttack._get_expected_attention_position( data, my_data )
-			if expected_pos then
-				aim = true
 			end
 		end
 	end

@@ -351,8 +351,6 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 	local objective_area = nil
 
 	if obstructed_area then
-		objective_area = obstructed_area
-		
 		if phase_is_anticipation then
 			pull_back = true -- We have encountered a criminal during anticipation, pull back until the assault starts otherwise we'd open fire and pull back immediately anyway
 		elseif not current_objective.open_fire or current_objective.area.id ~= obstructed_area.id then
