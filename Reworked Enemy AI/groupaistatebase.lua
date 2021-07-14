@@ -1,10 +1,10 @@
 -- Last area is never set in vanilla so this doesn't do anything
 -- Removes duplicate entries from the coarse path
 function GroupAIStateBase:_merge_coarse_path_by_area(coarse_path)
-    local i_nav_seg = #coarse_path
-    local last_area = nil
+	local i_nav_seg = #coarse_path
+	local last_area = nil
 
-    while i_nav_seg > 0 do
+	while i_nav_seg > 0 do
 		if #coarse_path > 2 then -- Check this here instead, saving a little bit of performance
 			local nav_seg = coarse_path[i_nav_seg][1]
 			local area = self:get_area_from_nav_seg_id(nav_seg)
@@ -16,6 +16,6 @@ function GroupAIStateBase:_merge_coarse_path_by_area(coarse_path)
 			end
 		end
 
-        i_nav_seg = i_nav_seg - 1
-    end
+		i_nav_seg = i_nav_seg - 1
+	end
 end
