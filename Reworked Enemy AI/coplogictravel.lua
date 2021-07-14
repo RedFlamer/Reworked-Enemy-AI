@@ -40,7 +40,7 @@ function CopLogicTravel.upd_advance(data)
 	elseif my_data.processing_advance_path then
 		CopLogicTravel._upd_pathing(data, my_data)
 
-		if my_data == data.internal_data and my_data.advance_path then
+		if my_data == data.internal_data and not my_data.processing_advance_path and my_data.advance_path then
 			CopLogicTravel._chk_begin_advance(data, my_data)
 
 			if my_data.advancing and my_data.path_ahead then
