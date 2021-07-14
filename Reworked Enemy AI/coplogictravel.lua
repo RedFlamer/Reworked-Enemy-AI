@@ -1,25 +1,4 @@
-function CopLogicTravel.queued_update(data)
-	local my_data = data.internal_data
-	data.t = TimerManager:game():time()
-	local delay = CopLogicTravel._upd_enemy_detection(data)
-
-	if data.internal_data ~= my_data then
-		return
-	end
-
-	CopLogicTravel.upd_advance(data)
-
-	if data.internal_data ~= my_data then
-		return
-	end
-
-	if not delay then
-		delay = 1
-	end
-
-	CopLogicTravel.queue_update(data, data.internal_data, delay)
-end
-
+-- Stop queuing new updates instead of just using our existing ones
 function CopLogicTravel.upd_advance(data)
 	local unit = data.unit
 	local my_data = data.internal_data
@@ -58,17 +37,31 @@ function CopLogicTravel.upd_advance(data)
 		if my_data.advancing and my_data.path_ahead then
 			CopLogicTravel._check_start_path_ahead(data)
 		end
-	elseif my_data.processing_advance_path or my_data.processing_coarse_path then
+	elseif my_data.processing_advance_path then
 		CopLogicTravel._upd_pathing(data, my_data)
 
-		if my_data ~= data.internal_data then
-			return
+		if my_data == data.internal_data and my_data.advance_path then
+			CopLogicTravel._chk_begin_advance(data, my_data)
+
+			if my_data.advancing and my_data.path_ahead then
+				CopLogicTravel._check_start_path_ahead(data)
+			end
+		end
+	elseif my_data.processing_coarse_path then
+		CopLogicTravel._upd_pathing(data, my_data)
+	
+		if my_data == data.internal_data and not my_data.processing_coarse_path then -- We have received our pathing results
+			if objective and (objective.nav_seg or objective.type == "follow") then
+				if my_data.coarse_path then -- We received a coarse path
+					CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data)
+				else
+					CopLogicTravel._begin_coarse_pathing(data, my_data) -- Still no coarse path, search again
+				end
+			end
 		end
 	elseif my_data.cover_leave_t then
-		if not unit:movement():chk_action_forbidden("walk") and not data.unit:anim_data().reload then
-			if my_data.cover_leave_t < t then
-				my_data.cover_leave_t = nil
-			end
+		if not unit:movement():chk_action_forbidden("walk") and not data.unit:anim_data().reload and my_data.cover_leave_t < t then
+			my_data.cover_leave_t = nil
 		end
 		
 		if my_data.cover_leave_t then
