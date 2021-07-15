@@ -2,7 +2,7 @@ local math_abs = math.abs
 local math_lerp = math.lerp
 local math_min = math.min
 local math_round = math.round
-local math_up = math.up
+local math_up = math.UP
 
 local mvec3_cpy = mvector3.copy
 local mvec3_set = mvector3.set
