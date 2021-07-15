@@ -14,7 +14,7 @@ function CopLogicAttack._upd_aim( data, my_data )
 	local verified = focus_enemy and focus_enemy.verified
 	local nearly_visible = focus_enemy and focus_enemy.nearly_visible
 	local reaction = focus_enemy and focus_enemy.reaction
-	local expected_pos = focus_enemy and (focus_enemy.last_verified_pos or focus_enemy.verified_pos or focus_enemy.criminal_record and focus_enemy.criminal_record.pos)
+	local expected_pos = focus_enemy and (focus_enemy.last_verified_pos or focus_enemy.verified_pos)
 	
 	if focus_enemy and reaction >= react_aim then
 		local verified_t = focus_enemy.verified_t

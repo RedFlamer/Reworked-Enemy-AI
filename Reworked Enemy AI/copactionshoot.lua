@@ -38,22 +38,19 @@ function CopActionShoot:update(t)
 
 		local fwd = self._common_data.fwd
 		local fwd_dot = mvec3_dot(fwd, tar_vec_flat)
+		local active_actions = self._common_data.active_actions
+		local queued_actions = self._common_data.queued_actions
 
-		if self._turn_allowed then
-			local active_actions = self._common_data.active_actions
-			local queued_actions = self._common_data.queued_actions
+		if (not active_actions[2] or active_actions[2]:type() == "idle") and (not queued_actions or not queued_actions[1] and not queued_actions[2]) and not self._ext_movement:chk_action_forbidden("walk") then
+			local spin = tar_vec_flat:to_polar_with_reference(fwd, math.UP).spin
+			if math.abs(spin) > 25 then
+				local new_action_data = {
+					body_part = 2,
+					type = "turn",
+					angle = spin
+				}
 
-			if (not active_actions[2] or active_actions[2]:type() == "idle") and (not queued_actions or not queued_actions[1] and not queued_actions[2]) and not self._ext_movement:chk_action_forbidden("walk") then
-				local spin = tar_vec_flat:to_polar_with_reference(fwd, math.UP).spin
-				if math.abs(spin) > 25 then
-					local new_action_data = {
-						body_part = 2,
-						type = "turn",
-						angle = spin
-					}
-
-					self._ext_movement:action_request(new_action_data)
-				end
+				self._ext_movement:action_request(new_action_data)
 			end
 		end
 
