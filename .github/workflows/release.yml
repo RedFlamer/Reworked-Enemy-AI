@@ -1,0 +1,55 @@
+name: Create PAYDAY mod release
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@main
+    - name: Delete Existing Release
+      uses: ame-yu/action-delete-latest-release@v2
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Archive Mod
+      run: |
+         .\.github\7za.exe -tzip a ".\Reworked Enemy AI.zip" ".\Reworked Enemy AI"
+      shell: powershell
+    - name: Create New Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+        prerelease: false
+        body: |
+          This release zip is automatically updated on every push. You can ignore the "x commits behind" message.
+    - name: Upload Mod Zip to Release
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./Reworked Enemy AI.zip
+        asset_name: Reworked Enemy AI.zip
+        asset_content_type: application/zip
+    - name: Hash mod and create mod meta file
+      id: create_meta_file
+      run: |
+         $(cat .\.github\meta.json).Replace("%HASH%", $(./.github/hash.exe "./Reworked Enemy AI").Substring(17)) > ./meta.json
+    - name: Upload meta file to Release
+      id: upload-meta-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./meta.json
+        asset_name: meta.json
+        asset_content_type: application/json
