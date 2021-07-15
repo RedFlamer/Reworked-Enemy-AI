@@ -25,12 +25,12 @@ function CopLogicAttack._upd_aim( data, my_data )
 				local last_sup_t = data.unit:character_damage():last_suppression_t()
 				local vis_ray = focus_enemy.vis_ray
 				local verified_dis = focus_enemy.verified_dis
-				local weapon_range = running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.far
-				local criminal_record = focus_enemy.criminal_record
+				local weapon_range = running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.optimal
 				
 				if last_sup_t and (data.t - last_sup_t) < (running and 2.1 or 7) * (verified and 1 or (vis_ray and vis_ray.distance > 500 and 0.5) or 0.2) then
 					shoot = true
 				elseif verified then
+					local criminal_record = focus_enemy.criminal_record
 					if verified_dis < weapon_range then
 						shoot = true
 					elseif criminal_record and criminal_record.assault_t and data.t - criminal_record.assault_t < 2 then
@@ -41,7 +41,7 @@ function CopLogicAttack._upd_aim( data, my_data )
 				end
 			end
 			
-			aim = shoot or focus_enemy.verified_dis < (running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.far)
+			aim = shoot or focus_enemy.verified_dis < (running and data.internal_data.weapon_range.close or data.internal_data.weapon_range.optimal)
 		elseif expected_pos then
 			aim = not running or time_since_verification < 3.5
 			shoot = aim and my_data.shooting and reaction >= react_shoot and time_since_verification < (running and 2 or 3)
