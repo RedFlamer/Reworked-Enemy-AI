@@ -40,7 +40,7 @@ function CopLogicTravel.upd_advance(data)
 	elseif my_data.processing_advance_path then
 		CopLogicTravel._upd_pathing(data, my_data)
 
-		if my_data == data.internal_data and not my_data.processing_advance_path and my_data.advance_path then
+		if my_data == data.internal_data and not my_data.processing_advance_path and my_data.advance_path then -- We have received our pathing results
 			CopLogicTravel._chk_begin_advance(data, my_data)
 
 			if my_data.advancing and my_data.path_ahead then
@@ -68,7 +68,7 @@ function CopLogicTravel.upd_advance(data)
 			if data.attention_obj and AIAttentionObject.REACT_COMBAT <= data.attention_obj.reaction and (not my_data.best_cover or not my_data.best_cover[4]) and not unit:anim_data().crouch and (not data.char_tweak.allowed_poses or data.char_tweak.allowed_poses.crouch) then
 				CopLogicAttack._chk_request_action_crouch(data)
 			end
-		elseif objective and (objective.nav_seg or objective.type == "follow") then -- Normally the logic would shoot itself in the foot and queue another update even though the enemy has hit the timer to be allowed to move, so instead just allow the damn enemy to move
+		elseif objective and (objective.nav_seg or objective.type == "follow") then -- Normally the logic would shoot itself in the foot and queue another update before letting the enemy move, so instead just allow the damn enemy to move
 			if my_data.coarse_path then
 				if my_data.coarse_path_index == #my_data.coarse_path then
 					CopLogicTravel._on_destination_reached(data)
@@ -80,6 +80,10 @@ function CopLogicTravel.upd_advance(data)
 			else
 				CopLogicTravel._begin_coarse_pathing(data, my_data)
 			end
+		else
+			CopLogicBase._exit(data.unit, "idle")
+
+			return
 		end
 	elseif objective and (objective.nav_seg or objective.type == "follow") then
 		if my_data.coarse_path then

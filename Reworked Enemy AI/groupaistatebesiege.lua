@@ -267,6 +267,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 	end
 
 	local phase_is_anticipation = phase == "anticipation"
+	local phase_is_sustain = phase == "sustain"
 	local current_objective = group.objective
 	local approach, open_fire, push, pull_back = nil
 	local obstructed_area = self:_chk_group_areas_tresspassed(group)
@@ -385,7 +386,11 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			if phase_is_anticipation and current_objective.open_fire then
 				pull_back = true -- We had an open_fire objective during anticipation, pull back until the assault initiates
 			elseif not has_criminals_close then
-				approach = true -- There are no criminals nearby to us, approach them without using any grenades
+				if phase_is_sustain and (not tactics_map or not tactics_map.ranged_fire) then
+					push = true -- There are no criminals nearby to us during the assault and we are not a ranged fire group, push the criminals
+				else
+					approach = true -- There are no criminals nearby to us, approach them if we are a ranged fire group or the assault is not currently ongoing
+				end
 			elseif not phase_is_anticipation then
 				if not current_objective.open_fire and has_criminals_in_navseg then
 					open_fire = true -- There is a criminal in our immediate area, switch to an open_fire objective and engage the criminal
