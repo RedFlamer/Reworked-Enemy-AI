@@ -529,7 +529,6 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 				coarse_path = assault_path,
 				pose = "stand",
 				attitude = push and "engage" or "avoid",
-				moving_in = push and true or nil,
 				open_fire = push or nil
 			}
 			group.is_chasing = push and true or nil
@@ -568,7 +567,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			local new_grp_objective = {
 				attitude = "avoid",
 				stance = "hos",
-				pose = "crouch",
+				pose = "stand",
 				type = "assault_area",
 				area = retreat_area,
 				coarse_path = {
