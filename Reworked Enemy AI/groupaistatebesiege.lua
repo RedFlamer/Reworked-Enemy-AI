@@ -567,7 +567,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			local new_grp_objective = {
 				attitude = "avoid",
 				stance = "hos",
-				pose = "stand",
+				pose = "crouch",
 				type = "assault_area",
 				area = retreat_area,
 				coarse_path = {
