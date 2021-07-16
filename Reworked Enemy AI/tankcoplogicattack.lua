@@ -21,7 +21,7 @@ function TankCopLogicAttack.update(data)
 	if not focus_enemy or focus_enemy.reaction < react_aim then
 		CopLogicAttack._upd_enemy_detection(data, true)
 
-		focus_enemy = data.attention_o0bj
+		focus_enemy = data.attention_obj
 		
 		if my_data ~= data.internal_data or not focus_enemy or focus_enemy.reaction < react_aim then
 			return
