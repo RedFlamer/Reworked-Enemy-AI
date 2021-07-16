@@ -15,6 +15,7 @@ local mvec3_multiply = mvector3.multiply
 local mvec3_set = mvector3.set
 local mvec3_set_length = mvector3.set_length
 local mvec3_set_z = mvector3.set_z
+local mvec3_sub = mvector3.subtract
 
 local tmp_vec1 = Vector3()
 
@@ -40,9 +41,7 @@ function CopLogicBase._upd_attention_obj_detection(data, min_reaction, max_react
 		local angle = mvec3_angle(my_head_fwd, tmp_vec1)
 		local angle_max = math_lerp(180, my_data.detection.angle_max, math_clamp((dis - 150) / 700, 0, 1))
 
-		if angle_max > angle * strictness then
-			return true
-		end
+		return angle_max > angle * strictness
 	end
 
 	local function _angle_and_dis_chk(handler, settings, attention_pos)
