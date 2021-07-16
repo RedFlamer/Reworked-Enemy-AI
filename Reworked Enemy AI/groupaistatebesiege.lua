@@ -394,9 +394,11 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			elseif not phase_is_anticipation then
 				if not current_objective.open_fire and has_criminals_in_navseg then
 					open_fire = true -- There is a criminal in our immediate area, switch to an open_fire objective and engage the criminal
-				elseif group.in_place_t and (group.is_chasing or not tactics_map or not tactics_map.ranged_fire or self._t - group.in_place_t > 15) then
-					push = true -- The group have reached their destination and are chasing the criminals/have been in place for longer than 15s/are not a ranged fire group, path to criminals
+				elseif group.is_chasing or not tactics_map or not tactics_map.ranged_fire or self._t - group.in_place_t > 10 then
+					push = true -- The group have reached their destination and are chasing the criminals/have been in place for longer than 10s/are not a ranged fire group, path to criminals
 				end
+			elseif self._t - group.in_place_t > 15 then
+				approach = true
 			end
 		end
 	end
