@@ -359,7 +359,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 		end
 	elseif not current_objective.moving_in then -- Do not re-assign an objective, the group is deathguarding a criminal
 		if current_objective.moving_out then -- Do not re-assign an objective as the group are still moving out to their current objective, if the path to the objective is obstructed then pull back
-			if group.objective.coarse_path and not group.is_chasing then -- Don't bother if there isn't a coarse_path to check, do not pull back if the group is pushing
+			if group.objective.coarse_path and not group.is_chasing and not phase_is_sustain then -- Don't bother if there isn't a coarse_path to check, do not pull back if the group is pushing and don't pull back during assaults
 				local obstructed_path_index = self:_chk_coarse_path_obstructed(group)
 				if obstructed_path_index then -- Our coarse path is obstructed by a criminal, pull back
 					objective_area = self:get_area_from_nav_seg_id(group.coarse_path[math.max(obstructed_path_index - 1, 1)][1])
@@ -398,7 +398,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 					push = true -- The group have reached their destination and are chasing the criminals/have been in place for longer than 10s/are not a ranged fire group, path to criminals
 				end
 			elseif group.in_place_t and self._t - group.in_place_t > 15 then
-				approach = true
+				push = true
 			end
 		end
 	end
