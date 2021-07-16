@@ -17,7 +17,7 @@ local mvec3_rand_orth = mvector3.random_orthogonal
 local temp_vec2 = Vector3()
 
 -- Fix an enemy turning condition only working for clients
--- From Streamlined Heisting
+-- Optimize the function slightly
 function CopActionShoot:update(t)
 	local vis_state = self._ext_base:lod_stage()
 	vis_state = vis_state or 4

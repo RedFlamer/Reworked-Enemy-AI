@@ -1,6 +1,5 @@
 function CopLogicIdle._chk_relocate( data )
 	if data.objective and data.objective.type == "follow" then
-		
 		if data.is_converted then
 			if TeamAILogicIdle._check_should_relocate( data, data.internal_data, data.objective ) then
 				data.objective.in_place = nil
