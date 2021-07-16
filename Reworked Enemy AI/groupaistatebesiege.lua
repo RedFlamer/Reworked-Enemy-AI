@@ -366,7 +366,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 					pull_back = true
 				end
 			end
-		elseif not group.in_place_t or self._t - group.in_place_t > 4 then -- Group have finished their objective, re-assign a new objective
+		elseif not group.in_place_t or self._t - group.in_place_t > 2 then -- Group have finished their objective, re-assign a new objective
 			local has_criminals_close = nil
 			local has_criminals_in_navseg = nil
 
