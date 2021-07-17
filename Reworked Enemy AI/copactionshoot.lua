@@ -19,6 +19,8 @@ local mvec3_set_z = mvector3.set_z
 local mvec3_sub = mvector3.subtract
 local mrot_axis_angle = mrotation.set_axis_angle
 
+local temp_rot1 = Rotation()
+
 local temp_vec2 = Vector3()
 
 -- Fix an enemy turning condition only working for clients
