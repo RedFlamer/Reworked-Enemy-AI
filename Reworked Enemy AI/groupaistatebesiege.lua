@@ -391,7 +391,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 				if phase_is_sustain and (not tactics_map or not tactics_map.flank) then
 					push = true
 				else
-					approach = true -- Try to flank the criminals
+					approach = true -- Try to flank the criminals if we're a flanking group
 				end
 			elseif not phase_is_anticipation then
 				if not current_objective.open_fire and has_criminals_in_navseg then
@@ -563,8 +563,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			local forwardmost_i_nav_point = self:_get_group_forwardmost_coarse_path_index(group)
 
 			if forwardmost_i_nav_point then
-				local nearest_safe_nav_seg_id = current_objective.coarse_path(forwardmost_i_nav_point)
-				retreat_area = self:get_area_from_nav_seg_id(nearest_safe_nav_seg_id)
+				retreat_area = self:get_area_from_nav_seg_id(current_objective.coarse_path[forwardmost_i_nav_point][1])
 			end
 		end
 
