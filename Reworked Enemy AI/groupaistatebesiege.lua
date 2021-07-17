@@ -356,6 +356,8 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			pull_back = true -- We have encountered a criminal during anticipation, pull back until the assault starts otherwise we'd open fire and pull back immediately anyway
 		elseif not current_objective.open_fire or current_objective.area.id ~= obstructed_area.id then
 			open_fire = true -- One of our group members has encountered a criminal, send the group to engage them in the navsegment if we do not currently have an open_fire objective for the area
+		elseif self._t - group.in_place_t > 4 then
+			push = true -- We've been in obstructed_area for longer than 4s, try to relocate
 		end
 	elseif not current_objective.moving_in then -- Do not re-assign an objective, the group is deathguarding a criminal
 		if current_objective.moving_out then -- Do not re-assign an objective as the group are still moving out to their current objective, if the path to the objective is obstructed then pull back
@@ -366,7 +368,7 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 					pull_back = true
 				end
 			end
-		elseif not group.in_place_t or self._t - group.in_place_t > 2 then -- Group have finished their objective, re-assign a new objective
+		else -- Group have finished their objective, re-assign a new objective
 			local has_criminals_close = nil
 			local has_criminals_in_navseg = nil
 
@@ -386,19 +388,19 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 			if phase_is_anticipation and current_objective.open_fire then
 				pull_back = true -- We had an open_fire objective during anticipation, pull back until the assault initiates
 			elseif not has_criminals_close then
-				if phase_is_sustain and (not tactics_map or not tactics_map.ranged_fire) then
-					push = true -- There are no criminals nearby to us during the assault and we are not a ranged fire group, push the criminals
+				if phase_is_sustain and (not tactics_map or not tactics_map.flank) then
+					push = true
 				else
-					approach = true -- There are no criminals nearby to us, approach them if we are a ranged fire group or the assault is not currently ongoing
+					approach = true -- Try to flank the criminals
 				end
 			elseif not phase_is_anticipation then
 				if not current_objective.open_fire and has_criminals_in_navseg then
 					open_fire = true -- There is a criminal in our immediate area, switch to an open_fire objective and engage the criminal
-				elseif group.is_chasing or not tactics_map or not tactics_map.ranged_fire or group.in_place_t and self._t - group.in_place_t > 10 then
-					push = true -- The group have reached their destination and are chasing the criminals/have been in place for longer than 10s/are not a ranged fire group, path to criminals
+				elseif group.is_chasing or not tactics_map or not tactics_map.ranged_fire then
+					push = true -- The group have reached their destination and are chasing the criminals/are not a ranged fire group, path to criminals
+				elseif (not tactics_map or tactics_map.charge) or self._t - group.in_place_t > 4 then
+					push = true -- The group have reached their destination for at least 4s/are a charging group, path to criminals
 				end
-			elseif group.in_place_t and self._t - group.in_place_t > 15 then
-				push = true
 			end
 		end
 	end
@@ -531,7 +533,8 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 				coarse_path = assault_path,
 				pose = "stand",
 				attitude = push and "engage" or "avoid",
-				open_fire = push or nil
+				open_fire = push or nil,
+				charge = push or nil
 			}
 			group.is_chasing = push and true or nil
 
