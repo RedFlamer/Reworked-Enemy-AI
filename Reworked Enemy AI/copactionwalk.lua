@@ -133,7 +133,7 @@ function CopActionWalk:_init()
 			end
 		end
 
-		if not action_desc.host_stop_pos_ahead and nav_path[1] ~= nav_path[2] then
+		if not action_desc.host_stop_pos_ahead and nav_path[1] ~= nav_path[2] then -- This almost certainly must be redundant, we shouldn't hit a situation where the first and second navpoint are the same
 			local ray_params = {
 				tracker_from = common_data.nav_tracker,
 				pos_to = self._nav_point_pos(nav_path[2])
