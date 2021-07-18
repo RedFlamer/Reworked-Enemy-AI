@@ -75,20 +75,18 @@ function CopActionWalk:_init()
 		self._nav_path = nav_path
 
 		if action_desc.path_simplified and action_desc.persistent then
-			if self._sync then
-				local t_ins = table.insert
-				local original_path = nav_path
-				local s_path = {}
-				self._simplified_path = s_path
+			local t_ins = table.insert
+			local original_path = nav_path
+			local s_path = {}
+			self._simplified_path = s_path
 
-				for _, nav_point in ipairs(original_path) do
+			for _, nav_point in ipairs(original_path) do
+				t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
+			end
+
+			if new_nav_points then
+				for _, nav_point in ipairs(new_nav_points) do
 					t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
-				end
-
-				if new_nav_points then
-					for _, nav_point in ipairs(new_nav_points) do
-						t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
-					end
 				end
 			end
 		elseif not managers.groupai:state():enemy_weapons_hot() then
@@ -133,15 +131,15 @@ function CopActionWalk:_init()
 			end
 		end
 
-		if not action_desc.host_stop_pos_ahead and self._nav_path[2] then
+		if not action_desc.host_stop_pos_ahead and nav_path[2] then
 			local ray_params = {
 				tracker_from = common_data.nav_tracker,
-				pos_to = self._nav_point_pos(self._nav_path[2])
+				pos_to = self._nav_point_pos(nav_path[2])
 			}
 
 			-- TODO: This doesn't account for height, could this be an issue?
 			if managers.navigation:raycast(ray_params) then -- Moving from our position to the next navpoint would be invalid
-				table.insert(self._nav_path, 2, mvec3_cpy(self._ext_movement:m_host_stop_pos())) -- insert m_host_stop_pos to return to where we deviated
+				table.insert(nav_path, 2, mvec3_cpy(self._ext_movement:m_host_stop_pos())) -- insert m_host_stop_pos to return to where we deviated
 
 				self._host_stop_pos_ahead = true
 			end
@@ -184,7 +182,7 @@ function CopActionWalk:_init()
 		self._chk_stop_dis = 210
 	end
 
-	if Network:is_server() then
+	if self._sync then
 		local sync_yaw = 0
 
 		if self._end_rot then
@@ -249,6 +247,12 @@ function CopActionWalk:_init()
 		end
 
 		self._ext_network:send("action_walk_start", self._nav_point_pos(next_nav_point), nav_link_act_yaw, nav_link_act_index, nav_link_from_idle, sync_haste, sync_yaw, self._no_walk and true or false, self._no_strafe and true or false, pose_code, end_pose_code)
+		
+		self._unit:brain():rem_pos_rsrv("stand")
+		self._unit:brain():add_pos_rsrv("move_dest", {
+			radius = 30,
+			position = mvec3_cpy(self._simplified_path[#self._simplified_path])
+		})
 	else
 		local pose = action_desc.pose
 
@@ -259,14 +263,6 @@ function CopActionWalk:_init()
 				local action, success = CopActionCrouch:new(action_desc, self._common_data)
 			end
 		end
-	end
-
-	if Network:is_server() then
-		self._unit:brain():rem_pos_rsrv("stand")
-		self._unit:brain():add_pos_rsrv("move_dest", {
-			radius = 30,
-			position = mvec3_cpy(self._simplified_path[#self._simplified_path])
-		})
 	end
 
 	return true
