@@ -1,4 +1,5 @@
 local mvec3_cpy = mvector3.copy
+local mvec3_dis = mvector3.distance
 
 local math_ceil = math.ceil
 local math_abs = math.abs
