@@ -61,6 +61,7 @@ end
 -- If our deviation would still be valid for moving to the next nav point, we should just allow the enemy to take the path
 -- Otherwise utilising m_host_stop_pos should allow us to return to where we deviated and continue from there
 -- Therefore preventing the enemy from taking an invalid path, but the enemy will still have desynced from their true position, catching up is necessary
+-- This should be fine with unmodded players
 
 -- There also seems to be a mistake, clients waiting for _upd_wait_for_full_blend could still receive navpoints that would go unaccounted for
 function CopActionWalk:_init()
@@ -91,19 +92,57 @@ function CopActionWalk:_init()
 					c_class = nav_point
 				}
 			else
-				return false -- TODO: Does this ever actually occur?
+				return false
 			end		
 		end
 
 		self._nav_path = nav_path
-	else
-		if not action_desc.interrupted or not self._nav_path[1].x then -- Didn't interrupt, or point 1 in the nav path is a navlink
-			table.insert(self._nav_path, 1, mvec3_cpy(common_data.pos))
+
+		if action_desc.path_simplified and action_desc.persistent then
+			if self._sync then
+				local t_ins = table.insert
+				local original_path = nav_path
+				local s_path = {}
+				self._simplified_path = s_path
+
+				for _, nav_point in ipairs(original_path) do
+					t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
+				end
+
+				if new_nav_points then
+					for _, nav_point in ipairs(new_nav_points) do
+						t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
+					end
+				end
+			end
+		elseif not managers.groupai:state():enemy_weapons_hot() then
+			self._simplified_path = nav_path
 		else
-			self._nav_path[1] = mvec3_cpy(common_data.pos) -- This could lead to the enemy potentially walking through a wall to reach the 2nd navpoint? should we use m_host_stop_pos here to prevent it?
+			local good_pos = mvector3.copy(common_data.pos)
+			self._simplified_path = self._calculate_simplified_path(good_pos, nav_path, (not self._sync or self._common_data.stance.name == "ntl") and 2 or 1, self._sync, true)
+		end
+	else
+		local nav_path = self._nav_path
+		local new_nav_points = self._simplified_path -- Normally vanilla only accounts for new nav points received during _upd_wait_for_full_blend on the host
+		
+		if new_nav_points then
+			for i = 1, #new_nav_points do
+				local new_nav_point = new_nav_points[i]
+				
+				nav_path[#nav_path + 1] = new_nav_point
+			end
 		end
 
-		local nav_path = self._nav_path
+		if action_desc.interrupted then -- Action interrupted, we need to insert the current unit position
+			if not nav_path[2] then -- The path only had one navpoint left, we need to replace the second entry with the first
+				-- This should be able to happen as clients have to dictate the unit position for the path, so a singular entry is possible
+				nav_path[2] = nav_path[1] -- Vanilla doesn't do this, which could cause issues if the action is interrupted with only one navpoint left
+			end
+			
+			nav_path[1] = mvec3_cpy(common_data.pos) -- If moving from this position to the next would lead to an invalid path, we should use m_host_stop_pos to return to where we deviated to ensure a valid path
+		elseif not nav_path[1].x or nav_path[1] ~= common_data.pos then -- first entry isn't our current position, we need to insert it
+			table.insert(nav_path, 1, mvec3_cpy(common_data.pos)) -- Insert our position as the first entry
+		end
 
 		for i = 1, #nav_path do
 			local nav_point = nav_path[i]
@@ -124,39 +163,24 @@ function CopActionWalk:_init()
 				pos_to = self._nav_point_pos(self._nav_path[2])
 			}
 
-			if managers.navigation:raycast(ray_params) then
-				table.insert(self._nav_path, 2, mvec3_cpy(self._ext_movement:m_host_stop_pos()))
+			-- TODO: This doesn't account for height, could this be an issue?
+			if managers.navigation:raycast(ray_params) then -- Moving from our position to the next navpoint would be invalid
+				table.insert(self._nav_path, 2, mvec3_cpy(self._ext_movement:m_host_stop_pos())) -- insert m_host_stop_pos to return to where we deviated
 
 				self._host_stop_pos_ahead = true
 			end
 		end
-	end
-
-	if action_desc.path_simplified and action_desc.persistent then
-		if self._sync then
-			local t_ins = table.insert
-			local original_path = self._nav_path
-			local new_nav_points = self._simplified_path
-			local s_path = {}
-			self._simplified_path = s_path
-
-			for _, nav_point in ipairs(original_path) do
-				t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
-			end
-
-			if new_nav_points then
-				for _, nav_point in ipairs(new_nav_points) do
-					t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
-				end
-			end
+		
+		self._nav_path = nav_path
+		
+		if action_desc.path_simplified and action_desc.persistent then
+			self._simplified_path = nav_path
+		elseif not managers.groupai:state():enemy_weapons_hot() then
+			self._simplified_path = nav_path
 		else
-			self._simplified_path = self._nav_path
+			local good_pos = mvector3.copy(common_data.pos)
+			self._simplified_path = self._calculate_simplified_path(good_pos, nav_path, (not self._sync or self._common_data.stance.name == "ntl") and 2 or 1, self._sync, true)
 		end
-	elseif not managers.groupai:state():enemy_weapons_hot() then
-		self._simplified_path = self._nav_path
-	else
-		local good_pos = mvector3.copy(common_data.pos)
-		self._simplified_path = self._calculate_simplified_path(good_pos, self._nav_path, (not self._sync or self._common_data.stance.name == "ntl") and 2 or 1, self._sync, true)
 	end
 
 	if not self._simplified_path[2].x then
