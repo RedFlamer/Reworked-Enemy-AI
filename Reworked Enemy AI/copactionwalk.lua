@@ -115,6 +115,7 @@ function CopActionWalk:_init()
 			end
 			
 			nav_path[1] = mvec3_cpy(common_data.pos) -- If moving from this position to the next would lead to an invalid path, we should use m_host_stop_pos to return to where we deviated to ensure a valid path
+			-- Is this right? if the first entry is still needed, surely there could be issues, vanilla might also be wrong here too
 		elseif not nav_path[1].x or nav_path[1] ~= common_data.pos then -- first entry isn't our current position, we need to insert it
 			table.insert(nav_path, 1, mvec3_cpy(common_data.pos)) -- Insert our position as the first entry
 		end
@@ -132,7 +133,7 @@ function CopActionWalk:_init()
 			end
 		end
 
-		if not action_desc.host_stop_pos_ahead and nav_path[2] then
+		if not action_desc.host_stop_pos_ahead and nav_path[1] ~= nav_path[2] then
 			local ray_params = {
 				tracker_from = common_data.nav_tracker,
 				pos_to = self._nav_point_pos(nav_path[2])
