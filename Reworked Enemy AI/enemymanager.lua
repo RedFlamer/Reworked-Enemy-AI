@@ -3,8 +3,9 @@
 -- Which isn't so bad if there's only a few low timer tasks queued, but if we're comparing 95 timers every time there's a low timer task queued, that is pretty inefficient
 -- Whereas the to_merge table will significantly cut the amount of timers we have to check, so it's more like comparing 30 timers 5 times
 -- And then comparing the 95 timers and merging all 5 of the low timer tasks into that position at once, instead of separately
--- In this case resulting in 30 * 5 + 95 = 245 timer comparisons
+-- In this case resulting in 30 * 5 + 95 = 245 timer comparisons, and the table will only have to be remade once
 -- Whereas not aggregating them results in 95 * 5 = 475 timer comparisons which is notably less efficient, even in this absolute best case scenario
+-- On top of the fact the table would also have to remade multiple times, which makes it even more inefficient to not aggregate
 
 -- In any case, avoid comparing timers to find a position on the main table due to it's larger size and aggregate them all to be added at once with a to_merge table
 -- Minimising the amount of times we need to check the timer on each task in the main table to once unless we need to add any tasks into that position
@@ -42,13 +43,11 @@ function EnemyManager:queue_task(id, task_clbk, data, execute_t, verification_cl
 			self._queued_tasks_timerless[#self._queued_tasks_timerless + 1] = task_data
 			-- By just appending the timerless task to the end of the timerless table as soon as it's queued, the table will always preserve the first task as the oldest
 			-- This also saves checking every single timer on the main table to find a position, since we know it has no timer
-		elseif #self._queued_tasks == 0 then
-			self._queued_tasks[#self._queued_tasks + 1] = task_data -- Ensure that we can reindex without having to check that there already is a queued task
 		else
 			-- If the task has a timer, add it to a table to be merged with self._queued_tasks after we're done executing tasks and reindexing the table
 			-- There is no situation in which it is necessary to merge a task with a timer into self._queued_tasks immediately after it gets queued
 			-- As if the task has a timer it is guaranteed not to be ready to be executed on the same frame it is queued
-			-- This allows us aggregate position finding for newly queued tasks, instead of comparing timers in the main table for every single task that gets queued
+			-- This allows us to aggregate position finding for newly queued tasks, instead of comparing timers in the main table for every single task that gets queued
 			-- Since the to_merge table almost certainly will have significantly less entries than the main task table, this should save performance
 			local to_merge_table = self._to_merge
 			local to_merge_table_size = #to_merge_table
@@ -282,7 +281,7 @@ function EnemyManager:_reindex_timer(tasks_executed)
 		local to_merge_task = to_merge[to_merge_length]
 		local existing_task = queued_tasks[queued_tasks_length]
 		
-		if to_merge_task and to_merge_task.t > existing_task.t then
+		if to_merge_task and existing_task and to_merge_task.t > existing_task.t then
 			new_timer[i] = to_merge_task -- The task to merge has a greater time than the next, insert it
 			
 			to_merge_length = to_merge_length - 1
