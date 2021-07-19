@@ -91,7 +91,7 @@ function EnemyManager:update_queue_task(id, task_clbk, data, execute_t, verifica
 	end)
 
 	if not task_data and self._queued_tasks_timerless then
-		task_data, _ = t_fv(self._queued_tasks_timerless, function (td)
+		task_data, _ = table.find_value(self._queued_tasks_timerless, function (td)
 			return td.id == id
 		end)
 		
@@ -101,7 +101,7 @@ function EnemyManager:update_queue_task(id, task_clbk, data, execute_t, verifica
 	end
 	
 	if not task_data and self._to_merge then
-		task_data, _ = t_fv(self._to_merge, function (td)
+		task_data, _ = table.find_value(self._to_merge, function (td)
 			return td.id == id
 		end)
 		
@@ -205,7 +205,7 @@ function EnemyManager:_execute_queued_task(i, timerless)
 end
 
 -- Ignoring asap tasks for now because they just wouldn't work cleanly with how the table is reindexed
--- Could handle them by remaking the entire table but can't aggregate it with other tasks
+-- Could handle them by remaking the entire table but they cannot be aggregated with other tasks
 function EnemyManager:_update_queued_tasks(t, dt)
 	local tasks_executed = 0
 	local done = false
@@ -228,9 +228,10 @@ function EnemyManager:_update_queued_tasks(t, dt)
 		end
 		
 		if not done then
-			local queued_tasks = self._queued_tasks
-			for i = 1, #queued_tasks do
-				if queued_tasks[i].t < t then
+			local queued_tasks = #self._queued_tasks
+			for i = 1, queued_tasks do
+				if self._queued_tasks[i].t < t then
+				
 					self:_execute_queued_task(i, false)
 					
 					self._queue_buffer = self._queue_buffer - tick_rate
@@ -259,8 +260,8 @@ function EnemyManager:_update_queued_tasks(t, dt)
 		clbk()
 	end
 
-	if self._queued_task_executed or #self._to_merge > 0 then
-		self:_reindex_timer(tasks_executed)
+	if self._queued_task_executed or self._to_merge[1] then
+		self:_reindex_timer(tasks_executed) -- Need to reindex the table
 	end
 end
 
@@ -270,7 +271,7 @@ function EnemyManager:_reindex_timer(tasks_executed)
 	local to_merge = self._to_merge
 	local to_merge_length = #to_merge
 
-	local total_tasks = #queued_tasks + #to_merge - tasks_executed
+	local total_tasks = queued_tasks_length + to_merge_length - tasks_executed
 
 	local new_timer = {}
 
@@ -281,7 +282,7 @@ function EnemyManager:_reindex_timer(tasks_executed)
 		local to_merge_task = to_merge[to_merge_length]
 		local existing_task = queued_tasks[queued_tasks_length]
 		
-		if to_merge_task and existing_task and to_merge_task.t > existing_task.t then
+		if not existing_task or to_merge_task and to_merge_task.t > existing_task.t then
 			new_timer[i] = to_merge_task -- The task to merge has a greater time than the next, insert it
 			
 			to_merge_length = to_merge_length - 1
