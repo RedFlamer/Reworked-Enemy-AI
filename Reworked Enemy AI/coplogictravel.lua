@@ -1,3 +1,5 @@
+local mvec3_cpy = mvector3.copy
+
 -- Stop queuing new updates instead of just using our existing ones
 function CopLogicTravel.upd_advance(data)
 	local unit = data.unit
@@ -51,13 +53,7 @@ function CopLogicTravel.upd_advance(data)
 		CopLogicTravel._upd_pathing(data, my_data)
 	
 		if my_data == data.internal_data and not my_data.processing_coarse_path then -- We have received our pathing results
-			if objective and (objective.nav_seg or objective.type == "follow") then
-				if my_data.coarse_path then -- We received a coarse path
-					CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data)
-				else
-					CopLogicTravel._begin_coarse_pathing(data, my_data) -- Still no coarse path, search again
-				end
-			end
+			CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data) -- should be fine
 		end
 	elseif my_data.cover_leave_t then
 		if not unit:movement():chk_action_forbidden("walk") and not data.unit:anim_data().reload and my_data.cover_leave_t < t then
@@ -81,7 +77,7 @@ function CopLogicTravel.upd_advance(data)
 				CopLogicTravel._begin_coarse_pathing(data, my_data)
 			end
 		else
-			CopLogicBase._exit(data.unit, "idle")
+			CopLogicBase._exit(data.unit, data.logic._get_logic_state_from_reaction(data) or "idle") -- Could be a scenario where we have finished our objective, but a criminal has appeared
 
 			return
 		end
@@ -98,7 +94,7 @@ function CopLogicTravel.upd_advance(data)
 			CopLogicTravel._begin_coarse_pathing(data, my_data)
 		end
 	else
-		CopLogicBase._exit(data.unit, "idle")
+		CopLogicBase._exit(data.unit, data.logic._get_logic_state_from_reaction(data) or "idle") -- Could be a scenario where we have finished our objective, but a criminal has appeared
 
 		return
 	end

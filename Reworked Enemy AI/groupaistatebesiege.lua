@@ -543,19 +543,23 @@ function GroupAIStateBesiege:_set_assault_objective_to_group(group, phase)
 	elseif pull_back then
 		local retreat_area, do_not_retreat = nil
 
-		for u_key, u_data in pairs(group.units) do
-			local nav_seg_id = u_data.tracker:nav_segment()
+		if not next(objective_area.criminal.units) then
+			retreat_area = objective_area
+		else
+			for u_key, u_data in pairs(group.units) do
+				local nav_seg_id = u_data.tracker:nav_segment()
 
-			if current_objective.area.nav_segs[nav_seg_id] then
-				retreat_area = current_objective.area
+				if current_objective.area.nav_segs[nav_seg_id] then
+					retreat_area = current_objective.area
 
-				break
-			end
+					break
+				end
 
-			if self:is_nav_seg_safe(nav_seg_id) then
-				retreat_area = self:get_area_from_nav_seg_id(nav_seg_id)
+				if self:is_nav_seg_safe(nav_seg_id) then
+					retreat_area = self:get_area_from_nav_seg_id(nav_seg_id)
 
-				break
+					break
+				end
 			end
 		end
 
