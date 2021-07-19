@@ -115,8 +115,8 @@ function CopActionWalk:_init()
 			end
 			
 			nav_path[1] = mvec3_cpy(common_data.pos) -- If moving from this position to the next would lead to an invalid path, we should use m_host_stop_pos to return to where we deviated to ensure a valid path
-			-- Is this right? if the first entry is still needed, surely there could be issues, vanilla might also be wrong here too
-		elseif not nav_path[1].x or nav_path[1] ~= common_data.pos then -- first entry isn't our current position, we need to insert it
+			-- After testing and drawing the vectors this is correct behaviour, good job overkill
+		elseif not nav_path[2] or not nav_path[1].x or nav_path[1] ~= common_data.pos then -- Seemed to get crashes with nav_path[2] being nil, make sure the path is at least 2 entries and entry 1 is our position
 			table.insert(nav_path, 1, mvec3_cpy(common_data.pos)) -- Insert our position as the first entry
 		end
 
