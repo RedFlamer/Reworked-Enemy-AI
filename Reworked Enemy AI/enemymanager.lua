@@ -215,7 +215,7 @@ function EnemyManager:_update_queued_tasks(t, dt)
 
 	if tick_rate <= self._queue_buffer then
 		local timerless = self._queued_tasks_timerless
-		if timerless and timerless[1] then
+		if timerless[1] then
 			self:_execute_queued_task(1, true) -- Just do one timerless task per frame
 
 			self:_reindex_timerless(2)
@@ -234,15 +234,15 @@ function EnemyManager:_update_queued_tasks(t, dt)
 				
 					self:_execute_queued_task(i, false)
 					
+					tasks_executed = tasks_executed + 1
+					
 					self._queue_buffer = self._queue_buffer - tick_rate
 
 					if self._queue_buffer <= 0 then
-						tasks_executed = i
 						break
 					end
 				else
-					tasks_executed = i - 1
-					break
+					break -- No need to keep checking as the table is sorted by timers
 				end
 			end
 		end
