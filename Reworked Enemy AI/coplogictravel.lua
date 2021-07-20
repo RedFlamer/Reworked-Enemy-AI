@@ -53,7 +53,11 @@ function CopLogicTravel.upd_advance(data)
 		CopLogicTravel._upd_pathing(data, my_data)
 	
 		if my_data == data.internal_data and not my_data.processing_coarse_path then -- We have received our pathing results
-			CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data) -- should be fine
+			if my_data.coarse_path then
+				CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data)
+			else
+				CopLogicTravel._begin_coarse_pathing(data, my_data)
+			end
 		end
 	elseif my_data.cover_leave_t then
 		if not unit:movement():chk_action_forbidden("walk") and not data.unit:anim_data().reload and my_data.cover_leave_t < t then
