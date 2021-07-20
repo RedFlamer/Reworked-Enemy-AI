@@ -58,7 +58,7 @@ function EnemyManager:queue_task(id, task_clbk, data, execute_t, verification_cl
 			end
 			
 			if insert_position == to_merge_table_size then
-				to_merge_table[#to_merge_table + 1] = task_data
+				self._to_merge[#self._to_merge + 1] = task_data
 				-- Task has a longer timer than every other task, no need to remake the table
 			else
 				-- We need to remake the to_merge table with the task
