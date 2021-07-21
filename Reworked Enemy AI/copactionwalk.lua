@@ -70,31 +70,24 @@ function CopActionWalk:_init()
 				}
 			else
 				return false
-			end		
+			end
 		end
 
 		self._nav_path = nav_path
 
 		if action_desc.path_simplified and action_desc.persistent then
-			local t_ins = table.insert
-			local original_path = nav_path
-			local s_path = {}
+			local new_nav_points = self._simplified_path
+	
+			for i = 1, #new_nav_points do
+				local nav_point = new_nav_points[i]
+				nav_path[#nav_path + 1] = nav_point.x and mvec3_cpy(nav_point) or nav_point
+			end
+
 			self._simplified_path = s_path
-
-			for _, nav_point in ipairs(original_path) do
-				t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
-			end
-
-			if new_nav_points then
-				for _, nav_point in ipairs(new_nav_points) do
-					t_ins(s_path, nav_point.x and mvec3_cpy(nav_point) or nav_point)
-				end
-			end
 		elseif not managers.groupai:state():enemy_weapons_hot() then
 			self._simplified_path = nav_path
 		else
-			local good_pos = mvec3_cpy(common_data.pos)
-			self._simplified_path = self._calculate_simplified_path(good_pos, nav_path, self._common_data.stance.name == "ntl" and 2 or 1, true, true)
+			self._simplified_path = self._calculate_simplified_path(mvec3_cpy(common_data.pos), nav_path, self._common_data.stance.name == "ntl" and 2 or 1, true, true)
 		end
 	else
 		local nav_path = self._nav_path
@@ -108,12 +101,7 @@ function CopActionWalk:_init()
 			end
 		end
 
-		if action_desc.interrupted then -- Action interrupted, we need to insert the current unit position
-			if not nav_path[2] then -- The path only had one navpoint left, we need to replace the second entry with the first
-				-- This should be able to happen as clients have to dictate the unit position for the path, so a singular entry is possible
-				nav_path[2] = nav_path[1] -- Vanilla doesn't do this, which could cause issues if the action is interrupted with only one navpoint left
-			end
-			
+		if action_desc.interrupted then -- Action interrupted, we need to insert the current unit position		
 			nav_path[1] = mvec3_cpy(common_data.pos) -- If moving from this position to the next would lead to an invalid path, we should use m_host_stop_pos to return to where we deviated to ensure a valid path
 			-- After testing and drawing the vectors this is correct behaviour, good job overkill
 		elseif not nav_path[2] or not nav_path[1].x or nav_path[1] ~= common_data.pos then -- Seemed to get crashes with nav_path[2] being nil, make sure the path is at least 2 entries and entry 1 is our position
@@ -180,7 +168,7 @@ function CopActionWalk:_init()
 		}
 	end
 
-	if #self._simplified_path == 2 and not self._NO_RUN_STOP and not self._no_walk and self._haste ~= "walk" and mvec3_dis(self._curve_path[2], self._curve_path[1]) >= 120 then
+	if #self._simplified_path == 2 and not self._no_run_stop and not self._no_walk and self._haste ~= "walk" and mvec3_dis(self._curve_path[2], self._curve_path[1]) >= 120 then
 		self._chk_stop_dis = 210
 	end
 
