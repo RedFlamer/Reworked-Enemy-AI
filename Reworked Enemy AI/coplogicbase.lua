@@ -23,20 +23,6 @@ local react_combat = AIAttentionObject.REACT_COMBAT
 local react_scared = AIAttentionObject.REACT_SCARED
 local react_suspicious = AIAttentionObject.REACT_SUSPICIOUS
 
-function CopLogicBase.queue_task(internal_data, id, func, data, exec_t, asap)
-	local qd_tasks = internal_data.queued_tasks
-
-	if qd_tasks then
-		qd_tasks[id] = true
-	else
-		internal_data.queued_tasks = {
-			[id] = true
-		}
-	end
-
-	managers.enemy:queue_task(id, func, data, exec_t, callback(CopLogicBase, CopLogicBase, "on_queued_task", internal_data), asap)
-end
-
 function CopLogicBase._upd_attention_obj_detection(data, min_reaction, max_reaction)
 	local t = data.t
 	local detected_obj = data.detected_attention_objects
