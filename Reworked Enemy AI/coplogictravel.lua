@@ -254,7 +254,7 @@ function CopLogicTravel._check_start_path_ahead(data)
 		return
 	end
 
-	local from_pos = data.unit:movement():nav_tracker():field_position()
+	local from_pos = data.pos_rsrv.move_dest.position
 	local to_pos = data.logic._get_exact_move_pos(data, next_index)
 	
 	if math_abs(from_pos.z - to_pos.z) < 100 and not managers.navigation:raycast({allow_entry = false, pos_from = from_pos, pos_to = to_pos}) then
@@ -276,7 +276,6 @@ function CopLogicTravel._check_start_path_ahead(data)
 	
 	my_data.processing_advance_path = true
 	local prio = data.logic.get_pathing_prio(data)
-	local from_pos = data.pos_rsrv.move_dest.position
 	local nav_segs = CopLogicTravel._get_allowed_travel_nav_segs(data, my_data, to_pos)
 
 	data.unit:brain():search_for_path_from_pos(my_data.advance_path_search_id, from_pos, to_pos, prio, nil, nav_segs)
