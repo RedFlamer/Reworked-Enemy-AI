@@ -1,3 +1,5 @@
+local math_abs = math.abs
+
 local mvec3_cpy = mvector3.copy
 
 -- Stop queuing new updates if we're already ready to move, why should an enemy have to queue another update to move if their cover wait time has expired?
