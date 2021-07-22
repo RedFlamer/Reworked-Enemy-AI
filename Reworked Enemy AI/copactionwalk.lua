@@ -29,18 +29,18 @@ function CopActionWalk:on_attention(attention)
 	end
 end
 
--- honestly fuck this code, this is painful even with the dev comments from an old lua source
-
--- As a client, should the first entry in self._nav_path be the unit position upon starting the path?
--- So upon interruption or other potential circumstances, should we set the first entry to be the unit position?
--- If we deviate from our path, would setting the first entry to be the unit position result in enemies moving through walls?
--- If so, we should return to the point in which we deviated from the path
--- If our deviation would still be valid for moving to the next nav point, we should just allow the enemy to take the path
--- Otherwise utilising m_host_stop_pos should allow us to return to where we deviated and continue from there
--- Therefore preventing the enemy from taking an invalid path, but the enemy will still have desynced from their true position, catching up is necessary
+-- The first entry in the path should be our current position, if not then update it
+-- If we deviate from our path, utilise m_host_stop_pos to return to where we deviated, which is set upon exiting the action and ensures we 
+-- don't take an invalid path, if we can continue from where we deviated to and move to the next nav point just take the path
+-- (no obstructions and height difference between current pos and nav point pos doesn't exceed 1m)
+-- We still will have to catch up with the host position however, but this should at least address some cases of cops taking invalid paths
 -- This should be fine with unmodded players
 
--- There also seems to be a mistake, clients waiting for _upd_wait_for_full_blend could still receive navpoints that would go unaccounted for
+-- Also fix clients waiting for _upd_wait_for_full_blend receiving navpoints that would go unaccounted for, haven't had this
+-- occur in gameplay, but account for it anyway
+
+-- And do some minor optimizations
+
 function CopActionWalk:_init()
 	if not self:_sanitize() then
 		return
@@ -83,7 +83,7 @@ function CopActionWalk:_init()
 				nav_path[#nav_path + 1] = nav_point.x and mvec3_cpy(nav_point) or nav_point
 			end
 
-			self._simplified_path = s_path
+			self._simplified_path = nav_path
 		elseif not managers.groupai:state():enemy_weapons_hot() then
 			self._simplified_path = nav_path
 		else
@@ -127,8 +127,8 @@ function CopActionWalk:_init()
 				pos_to = self._nav_point_pos(nav_path[2])
 			}
 
-			-- TODO: This doesn't account for height, could this be an issue?
-			if managers.navigation:raycast(ray_params) then -- Moving from our position to the next navpoint would be invalid
+			-- Still not verified whether it's necessary to account for height, do it just to be safe	
+			if math_abs(common_data.pos.z - pos_to.z) > 100 or managers.navigation:raycast(ray_params) then -- Moving from our position to the next navpoint would be invalid
 				table.insert(nav_path, 2, mvec3_cpy(self._ext_movement:m_host_stop_pos())) -- insert m_host_stop_pos to return to where we deviated
 
 				self._host_stop_pos_ahead = true
