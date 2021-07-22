@@ -1,6 +1,7 @@
 local mvec3_cpy = mvector3.copy
 
--- Stop queuing new updates instead of just using our existing ones
+-- Stop queuing new updates if we're already ready to move, why should an enemy have to queue another update to move if their cover wait time has expired?
+-- If an enemy receives their pathing results just fucking use them
 function CopLogicTravel.upd_advance(data)
 	local unit = data.unit
 	local my_data = data.internal_data
@@ -235,4 +236,80 @@ function CopLogicTravel.chk_group_ready_to_move( data, my_data )
 	end
 	
 	return true
+end
+
+function CopLogicTravel._check_start_path_ahead(data)
+	local my_data = data.internal_data
+
+	if my_data.processing_advance_path then
+		return
+	end
+
+	local objective = data.objective
+	local coarse_path = my_data.coarse_path
+	local next_index = my_data.coarse_path_index + 2
+	local total_nav_points = #coarse_path
+
+	if next_index > total_nav_points then
+		return
+	end
+
+	local from_pos = data.unit:movement():nav_tracker():field_position()
+	local to_pos = data.logic._get_exact_move_pos(data, next_index)
+	
+	if math_abs(from_pos.z - to_pos.z) < 100 and not managers.navigation:raycast({allow_entry = false, pos_from = from_pos, pos_to = to_pos}) then
+		-- Less than 1m height difference, and no obstructions, don't bother searching for a path and just go
+		-- If this has issues due to height difference, remember to change the value in copactionwalk too
+		my_data.advance_path = {
+			mvec3_cpy(from_pos)
+			to_pos
+		}
+
+		CopLogicTravel._chk_begin_advance(data, my_data)
+
+		if my_data.advancing and my_data.path_ahead then
+			CopLogicTravel._check_start_path_ahead(data)
+		end
+		
+		return
+	end	
+	
+	my_data.processing_advance_path = true
+	local prio = data.logic.get_pathing_prio(data)
+	local from_pos = data.pos_rsrv.move_dest.position
+	local nav_segs = CopLogicTravel._get_allowed_travel_nav_segs(data, my_data, to_pos)
+
+	data.unit:brain():search_for_path_from_pos(my_data.advance_path_search_id, from_pos, to_pos, prio, nil, nav_segs)
+end
+
+function CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data)
+	if not CopLogicTravel.chk_group_ready_to_move(data, my_data) then
+		return
+	end
+
+	local from_pos = data.unit:movement():nav_tracker():field_position()
+	local to_pos = CopLogicTravel._get_exact_move_pos(data, my_data.coarse_path_index + 1)
+
+	if math_abs(from_pos.z - to_pos.z) < 100 and not managers.navigation:raycast({allow_entry = false, pos_from = from_pos, pos_to = to_pos}) then
+		-- Less than 1m height difference, and no obstructions, don't bother searching for a path and just go
+		-- If this has issues due to height difference, remember to change the value in copactionwalk too
+		my_data.advance_path = {
+			mvec3_cpy(from_pos)
+			to_pos
+		}
+
+		CopLogicTravel._chk_begin_advance(data, my_data)
+
+		if my_data.advancing and my_data.path_ahead then
+			CopLogicTravel._check_start_path_ahead(data)
+		end
+		
+		return
+	end
+	
+	my_data.processing_advance_path = true
+	local prio = data.logic.get_pathing_prio(data)
+	local nav_segs = CopLogicTravel._get_allowed_travel_nav_segs(data, my_data, to_pos)
+
+	data.unit:brain():search_for_path(my_data.advance_path_search_id, to_pos, prio, nil, nav_segs)
 end
