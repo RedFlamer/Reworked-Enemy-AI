@@ -261,7 +261,7 @@ function CopLogicTravel._check_start_path_ahead(data)
 		-- Less than 1m height difference, and no obstructions, don't bother searching for a path and just go
 		-- If this has issues due to height difference, remember to change the value in copactionwalk too
 		my_data.advance_path = {
-			mvec3_cpy(from_pos)
+			mvec3_cpy(from_pos),
 			to_pos
 		}
 
@@ -293,7 +293,7 @@ function CopLogicTravel._chk_start_pathing_to_next_nav_point(data, my_data)
 		-- Less than 1m height difference, and no obstructions, don't bother searching for a path and just go
 		-- If this has issues due to height difference, remember to change the value in copactionwalk too
 		my_data.advance_path = {
-			mvec3_cpy(from_pos)
+			mvec3_cpy(from_pos),
 			to_pos
 		}
 
