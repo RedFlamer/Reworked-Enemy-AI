@@ -266,12 +266,6 @@ function CopLogicTravel._check_start_path_ahead(data)
 			mvec3_cpy(from_pos),
 			to_pos
 		}
-
-		CopLogicTravel._chk_begin_advance(data, my_data)
-
-		if my_data.advancing and my_data.path_ahead then
-			CopLogicTravel._check_start_path_ahead(data)
-		end
 		
 		return
 	end	
