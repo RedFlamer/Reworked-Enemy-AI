@@ -1,0 +1,17 @@
+{
+	"menu_id" : "REAI_option_menu",
+	"parent_menu_id" : "blt_options",
+	"title" : "REAI_options",
+	"description" : "REAI_options_desc",
+	"back_callback" : "REAI_callback_options_closed",
+	"items" : [
+		{
+			"type" : "toggle",
+			"id" : "masochism",
+			"title" : "REAI_masochism",
+			"description" : "REAI_masochism_desc",
+			"callback" : "REAI_check_clbk",
+			"value" : "masochism"
+		}
+	]
+}
