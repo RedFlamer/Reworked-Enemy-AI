@@ -3,5 +3,5 @@
 	"REAI_options_desc" : "Configure enemy AI"
 
 	"REAI_masochism" : "Masochism Mode"
-	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays, keeping them constantly on the move"
+	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays\nkeeping them constantly on the move"
 }
