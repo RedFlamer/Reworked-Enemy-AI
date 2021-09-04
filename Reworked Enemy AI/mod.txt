@@ -2,7 +2,7 @@
 	"name" : "Reworked Enemy AI",
 	"description" : "Reworks enemy AI to fix broken functionality and generally make enemies more active.",
 	"author" : "RedFlame",
-	"contact" : "Discord: RedFlame#3868",
+	"contact" : "Discord: RedFlame#3870",
 	"version" : "1",
 	"priority" : "-10",
 	"blt_version" : 2,
