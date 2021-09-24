@@ -16,6 +16,7 @@
 		{ "hook_id" : "lib/units/enemies/cop/actions/lower_body/copactionidle", "script_path" : "copactionidle.lua" },
 		{ "hook_id" : "lib/units/enemies/cop/actions/lower_body/copactionwalk", "script_path" : "copactionwalk.lua" },
 		{ "hook_id" : "lib/units/enemies/spooc/actions/lower_body/actionspooc", "script_path" : "actionspooc.lua" },
+		{ "hook_id" : "lib/units/enemies/shield/logics/shieldlogicattack", "script_path" : "shieldlogicattack.lua" },
 		{ "hook_id" : "lib/units/enemies/tank/logics/tankcoplogicattack", "script_path" : "tankcoplogicattack.lua" },
 		{ "hook_id" : "lib/units/enemies/taser/logics/taserlogicattack", "script_path" : "taserlogicattack.lua" },
 		{ "hook_id" : "lib/units/enemies/cop/logics/coplogicattack", "script_path" : "coplogicattack.lua" },
