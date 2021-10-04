@@ -4,7 +4,4 @@
 
 	"REAI_masochism" : "Masochism Mode"
 	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays\nKeeping them constantly on the move"
-
-	"REAI_fix_spawngroup_delay" : "Fix spawnpoint delays"
-	"REAI_fix_spawngroup_delay_desc" : "Reverts a change that makes all spawnpoints reset delay if all are on cooldown\nDisabled on masochism mode!"
 }

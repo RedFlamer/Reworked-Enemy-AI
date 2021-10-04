@@ -12,14 +12,6 @@
 			"description" : "REAI_masochism_desc",
 			"callback" : "REAI_check_clbk",
 			"value" : "masochism"
-		},
-		{
-			"type" : "toggle",
-			"id" : "fix_spawngroup_delay",
-			"title" : "REAI_fix_spawngroup_delay",
-			"description" : "REAI_fix_spawngroup_delay_desc",
-			"callback" : "REAI_check_clbk",
-			"value" : "fix_spawngroup_delay"
 		}
 	]
 }
