@@ -1,7 +1,10 @@
 {
 	"REAI_options" : "Reworked Enemy AI",
-	"REAI_options_desc" : "Configure Reworked Enemy AI"
+	"REAI_options_desc" : "Configure Reworked Enemy AI",
 
-	"REAI_masochism" : "Masochism Mode"
-	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays\nKeeping them constantly on the move"
+	"REAI_masochism" : "Masochism Mode",
+	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays\nKeeping them constantly on the move",
+	
+	"REAI_old_fades" : "Old Fade Behaviour",
+	"REAI_old_fades_desc" : "Restores assault fades to the way they worked prior to U173\nThis will make the game easier!"
 }

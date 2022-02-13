@@ -12,6 +12,14 @@
 			"description" : "REAI_masochism_desc",
 			"callback" : "REAI_check_clbk",
 			"value" : "masochism"
+		},
+		{
+			"type" : "toggle",
+			"id" : "old_fades",
+			"title" : "REAI_old_fades",
+			"description" : "REAI_old_fades_desc",
+			"callback" : "REAI_check_clbk",
+			"value" : "old_fades"
 		}
 	]
 }
