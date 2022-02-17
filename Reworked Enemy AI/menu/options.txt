@@ -1,5 +1,5 @@
 {
-	"menu_id" : "REAI_option_menu",
+	"menu_id" : "REAI_options_menu",
 	"parent_menu_id" : "blt_options",
 	"title" : "REAI_options",
 	"description" : "REAI_options_desc",
@@ -20,6 +20,38 @@
 			"description" : "REAI_old_fades_desc",
 			"callback" : "REAI_check_clbk",
 			"value" : "old_fades"
-		}
+		},
+		{
+			"type" : "toggle",
+			"id" : "enemy_accuracy_fix",
+			"title" : "REAI_enemy_accuracy_fix",
+			"description" : "REAI_enemy_accuracy_fix_desc",
+			"callback" : "REAI_check_clbk",
+			"value" : "enemy_accuracy_fix"
+		},
+		{
+			"type" : "slider",
+			"id" : "cover_wait_time",
+			"title" : "REAI_cover_wait_time",
+			"description" : "REAI_cover_wait_time_desc",
+			"callback" : "REAI_slider_clbk",
+			"value" : "cover_wait_time",
+			"default_value" : 2,
+			"min" : 0,
+			"max" : 4,
+			"step" : 0.5
+		},
+		{
+			"type" : "slider",
+			"id" : "enemy_spawn_interval",
+			"title" : "REAI_enemy_spawn_interval",
+			"description" : "REAI_enemy_spawn_interval_desc",
+			"callback" : "REAI_slider_clbk",
+			"value" : "enemy_spawn_interval",
+			"default_value" : 2,
+			"min" : 0.5,
+			"max" : 4,
+			"step" : 0.5
+		},
 	]
 }

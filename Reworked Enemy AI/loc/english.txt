@@ -6,5 +6,14 @@
 	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays\nKeeping them constantly on the move",
 	
 	"REAI_old_fades" : "Old Fade Behaviour",
-	"REAI_old_fades_desc" : "Restores assault fades to the way they worked prior to U173\nThis will make the game easier!"
+	"REAI_old_fades_desc" : "Restores assault fades to the way they worked prior to U173",
+	
+	"REAI_enemy_accuracy_fix" : "Enemy Accuracy Fix",
+	"REAI_enemy_accuracy_fix_desc" : "Fixes a bug causing enemies to hit shots that should've missed",
+	
+	"REAI_cover_wait_time" : "Enemy Cover Wait Time",
+	"REAI_cover_wait_time_desc" : "Adjusts the minimum amount of time (in seconds) enemies will wait in cover before advancing\nThe maximum amount of time is calculated as minimum * 1.5",
+	
+	"REAI_enemy_spawn_interval" : "Enemy Spawn Interval",
+	"REAI_enemy_spawn_interval_desc" : "Adjusts the time (in seconds) between spawning of enemy groups\nValues below 2s are not recommended"
 }
