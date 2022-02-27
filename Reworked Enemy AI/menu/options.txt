@@ -6,6 +6,18 @@
 	"back_callback" : "REAI_callback_options_closed",
 	"items" : [
 		{
+			"type" : "slider",
+			"id" : "ai_tickrate",
+			"title" : "REAI_ai_tickrate",
+			"description" : "REAI_ai_tickrate_desc",
+			"callback" : "REAI_slider_clbk",
+			"value" : "ai_tickrate",
+			"default_value" : 60,
+			"min" : 60,
+			"max" : 1000,
+			"step" : 10
+		},
+		{
 			"type" : "toggle",
 			"id" : "masochism",
 			"title" : "REAI_masochism",
@@ -50,7 +62,7 @@
 			"value" : "enemy_spawn_interval",
 			"default_value" : 2,
 			"min" : 0.5,
-			"max" : 4,
+			"max" : 5,
 			"step" : 0.5
 		},
 	]

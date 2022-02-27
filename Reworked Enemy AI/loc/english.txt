@@ -2,6 +2,9 @@
 	"REAI_options" : "Reworked Enemy AI",
 	"REAI_options_desc" : "Configure Reworked Enemy AI",
 
+	"REAI_ai_tickrate" : "Enemy AI Tickrate",
+	"REAI_ai_tickrate_desc" : "Adjusts the amount of enemy logic updates that can be done per second\nHigher values are more difficult but may impact performance. Vanilla default is 60",
+
 	"REAI_masochism" : "Masochism Mode",
 	"REAI_masochism_desc" : "Enemies will be allowed to path ahead and will no longer have any movement delays\nKeeping them constantly on the move",
 	
