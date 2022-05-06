@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+<mod name="Reworked Enemy AI">
+	<tweak definition="xml/std.animation_states"/>
+	<tweak definition="xml/std.animation_subset"/>
+</mod>
