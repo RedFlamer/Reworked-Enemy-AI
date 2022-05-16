@@ -44,23 +44,13 @@
 		</target>
 	</tweak>
 	<!-- Make medic heals an upper_body animation -->
-	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
-		<search>
-			<xml/>
-			<state name="std"/>
-			<to name="heal"/>
-		</search>
-		<target mode="attributes">
-			<attr name="redirect" value="upper_body/heal"/>
-		</target>
-	</tweak>
+	<!-- Can't change it to upper_body/heal because of syncing fuckery -->
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
 			<xml/>
 			<state name="std/heal/heal"/>
 		</search>
 		<target mode="attributes">
-			<attr name="name" value="upper_body/heal"/>
 			<attr name="segment" value="upper_body"/>
 			<attr name="mute" value="upper_body_ext"/>
 		</target>
@@ -69,7 +59,7 @@
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
 			<xml/>
-			<state name="upper_body/heal"/>
+			<state name="std/heal/heal"/>
 			<keys/>
 			<key extension_key="pose"/>
 		</search>
@@ -79,7 +69,7 @@
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
 			<xml/>
-			<state name="upper_body/heal"/>
+			<state name="std/heal/heal"/>
 			<keys/>
 			<key extension_key="pose"/>
 		</search>
@@ -89,7 +79,7 @@
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
 			<xml/>
-			<state name="upper_body/heal"/>
+			<state name="std/heal/heal"/>
 			<exit/>
 		</search>
 		<target mode="replace">
