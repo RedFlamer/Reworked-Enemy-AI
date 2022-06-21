@@ -9,8 +9,7 @@
 			<keys/>
 			<key extension_key="base_no_reload"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
@@ -19,8 +18,7 @@
 			<keys/>
 			<key extension_key="base_no_reload"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<!-- has to be done twice -->
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
@@ -30,8 +28,7 @@
 			<keys/>
 			<key extension_key="base_no_reload"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
@@ -40,8 +37,7 @@
 			<keys/>
 			<key extension_key="base_no_reload"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<!-- Make medic heals an upper_body animation -->
 	<!-- Can't change it to upper_body/heal because of syncing fuckery -->
@@ -63,8 +59,7 @@
 			<keys/>
 			<key extension_key="pose"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
@@ -73,8 +68,7 @@
 			<keys/>
 			<key extension_key="pose"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
@@ -147,8 +141,7 @@
 			<state name="std/hurt/sick/exit"/>
 			<to name="idle"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
@@ -196,8 +189,7 @@
 			<state name="std/hurt/poison/exit"/>
 			<to name="idle"/>
 		</search>
-		<target mode="replace">
-		</target>
+		<target mode="replace"/>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
 		<search>
