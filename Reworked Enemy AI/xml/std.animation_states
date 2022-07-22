@@ -50,6 +50,29 @@
 		</search>
 		<target mode="replace"/>
 	</tweak>
+	<!-- Dodge state fixes -->
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
+		<search>
+			<xml/>
+			<state name="std/dodge"/>
+			<keys/>
+		</search>
+		<target mode="attach">
+			<!-- The state should have these regardless of whether the actual copaction forces updating -->
+			<key at="enter" set_extension="anim_data" extension_key="base_need_upd" extension_value="true"/>
+			<key at="exit" set_extension="anim_data" extension_key="base_need_upd" extension_value="false"/>
+		</target>
+	</tweak>
+	<!-- Shield navlink displacement fix -->
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
+		<search>
+			<xml/>
+			<state name="std/stand/nav_link"/>
+		</search>
+		<target mode="attach">
+			<from_group name="std/crouch/still" blend="3"/>
+		</target>
+	</tweak>
 	<!-- Make medic heals an upper_body animation -->
 	<!-- Can't change it to upper_body/heal because of syncing fuckery -->
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
@@ -169,6 +192,17 @@
 		<search>
 			<xml/>
 			<state name="std/hurt/sick/exit"/>
+			<keys/>
+		</search>
+		<target mode="attach">
+			<key at="enter" set_extension="anim_data" extension_key="to_idle" extension_value="true"/>
+			<key at="exit" set_extension="anim_data" extension_key="to_idle" extension_value="false"/>
+		</target>
+	</tweak>
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
+		<search>
+			<xml/>
+			<state name="std/hurt/sick/exit"/>
 			<exit/>
 		</search>
 		<target mode="attributes">
@@ -211,6 +245,17 @@
 		</search>
 		<target mode="attributes">
 			<attr name="at" value="exit"/>
+		</target>
+	</tweak>
+	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
+		<search>
+			<xml/>
+			<state name="std/hurt/poison/exit"/>
+			<keys/>
+		</search>
+		<target mode="attach">
+			<key at="enter" set_extension="anim_data" extension_key="to_idle" extension_value="true"/>
+			<key at="exit" set_extension="anim_data" extension_key="to_idle" extension_value="false"/>
 		</target>
 	</tweak>
 	<tweak version="2" name="anims/units/enemies/cop/std" extension="animation_states">
